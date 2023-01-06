@@ -1,4 +1,4 @@
-use yew::{function_component, html};
+use yew::{function_component, Html, html};
 
 mod components;
 
@@ -8,8 +8,8 @@ use components::{
     body::Body,
 };
 
-#[function_component(App)]
-fn app() -> Html {
+#[function_component]
+fn App() -> Html {
     html! {
         <>
             <Header />
@@ -20,5 +20,5 @@ fn app() -> Html {
 }
 
 fn main() {
-    yew::start_app::<App>();
+    yew::Renderer::<App>::new().render();
 }

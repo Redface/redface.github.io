@@ -1,4 +1,4 @@
-use yew::{function_component, html, use_state, Callback};
+use yew::{function_component, Html, html, use_state, Callback};
 
 #[function_component(Test)]
 pub fn test_component() -> Html {
@@ -18,8 +18,8 @@ pub fn test_component() -> Html {
     }
 }
 
-#[function_component(Body)]
-pub fn body_component() -> Html {
+#[function_component()]
+pub fn Body() -> Html {
     html! {
         <main>
             <section>
