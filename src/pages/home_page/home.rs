@@ -1,7 +1,8 @@
-use yew::{function_component, Html, html, use_state, Callback};
+// use yew::{function_component, Html, html, Callback, use_state};
+use yew::prelude::*;
 
-#[function_component(Test)]
-pub fn test_component() -> Html {
+#[function_component]
+fn Test() -> Html {
     let counter = use_state(|| 0);
     let onclick = {
         let counter = counter.clone();
@@ -18,12 +19,14 @@ pub fn test_component() -> Html {
     }
 }
 
-#[function_component()]
-pub fn Body() -> Html {
+#[function_component]
+pub fn Home() -> Html {
     html! {
         <main>
             <section>
-                <header><h2>{"Daehwan 'Redface' Lee"}</h2></header>
+                <header>
+                    <h2>{"Daehwan 'Redface' Lee"}</h2>
+                </header>
                 <div>
                     <ul>
                         <li>{"What I do for living: Front-end developer"}</li>
@@ -34,5 +37,5 @@ pub fn Body() -> Html {
             </section>
             <Test />
         </main>
-    }
+   }
 }
