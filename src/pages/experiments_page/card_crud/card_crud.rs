@@ -155,6 +155,17 @@ pub fn CardCrud() -> Html {
             show_new_card_cloned2.set(true);
             edit_mode_idx_for_update.set(None);
         });
+
+        let cards_state_for_delete = cards_state.clone();
+        let _cards_for_delete = cards_state.clone();
+        let onclick_delete = Callback::from(move |e: MouseEvent| {
+            e.prevent_default();
+
+            let _cards_state = cards_state_for_delete.clone();
+            let mut _cards: Vec<_> = _cards_for_delete.to_vec();
+            _cards.remove(idx as usize);
+            _cards_state.set(_cards);
+        });
         let card_display = match *edit_mode_idx {
             Some(selected_id) => {
                 if selected_id.eq(&<usize as TryInto<i32>>::try_into(idx).unwrap()) {
@@ -177,13 +188,16 @@ pub fn CardCrud() -> Html {
                 }
             }
             None => html! {
-                <div onclick={onclick.clone()}>
-                    <Card
-                        key={props.date.to_string().clone()}
-                        title={props.title.clone()}
-                        content={props.content.clone()}
-                        date={props.date.clone()}
-                    />
+                <div>
+                    <div onclick={onclick.clone()}>
+                        <Card
+                            key={props.date.to_string().clone()}
+                            title={props.title.clone()}
+                            content={props.content.clone()}
+                            date={props.date.clone()}
+                        />
+                    </div>
+                    <button onclick={onclick_delete}>{"X"}</button>
                 </div>
             },
         };
