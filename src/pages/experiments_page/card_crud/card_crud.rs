@@ -1,6 +1,5 @@
 use yew::prelude::*;
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
-use log::info;
 use chrono::{Utc, DateTime};
 
 #[derive(Clone, Debug, PartialEq)]
@@ -126,8 +125,7 @@ pub fn CardCrud() -> Html {
 
         let _card_form_data_update = card_form_data_update.clone();
         let fields_update_form = default_fields.clone();
-        let onclick = Callback::from(move |e: MouseEvent| {
-            e.prevent_default();
+        let onclick = Callback::from(move |_: _| {
             _card_form_data_update.set(fields_update_form.clone());
             edit_mode_idx_cloned.set(Some(idx.try_into().unwrap()));
             show_new_card_cloned.set(false);
@@ -139,9 +137,7 @@ pub fn CardCrud() -> Html {
 
         let cards_state_for_update = cards_state.clone();
         let _cards_for_update = cards_state.clone();
-        let onclick_update = Callback::from(move |e: MouseEvent| {
-            e.prevent_default();
-
+        let onclick_update = Callback::from(move |_: _| {
             let _cards_state = cards_state_for_update.clone();
             let mut _cards: Vec<_> = cards_state_for_update.to_vec();
 
@@ -158,9 +154,7 @@ pub fn CardCrud() -> Html {
 
         let cards_state_for_delete = cards_state.clone();
         let _cards_for_delete = cards_state.clone();
-        let onclick_delete = Callback::from(move |e: MouseEvent| {
-            e.prevent_default();
-
+        let onclick_delete = Callback::from(move |_: _| {
             let _cards_state = cards_state_for_delete.clone();
             let mut _cards: Vec<_> = _cards_for_delete.to_vec();
             _cards.remove(idx as usize);
