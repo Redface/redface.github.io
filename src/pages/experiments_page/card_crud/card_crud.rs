@@ -1,6 +1,6 @@
-use yew::prelude::*;
+use chrono::{DateTime, Utc};
 use web_sys::{HtmlInputElement, HtmlTextAreaElement};
-use chrono::{Utc, DateTime};
+use yew::prelude::*;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct CardEntity {
@@ -25,7 +25,10 @@ pub struct CardFormProps {
 
 #[function_component]
 pub fn CardForm(_props: &CardFormProps) -> Html {
-    let default_fields = _props.default_fields.clone().unwrap_or(CardFormEntity { title: String::from(""), content: String::from("") });
+    let default_fields = _props.default_fields.clone().unwrap_or(CardFormEntity {
+        title: String::from(""),
+        content: String::from(""),
+    });
     let title_state = use_state(|| default_fields.title);
     let content_state = use_state(|| default_fields.content);
 
@@ -57,7 +60,10 @@ pub fn CardForm(_props: &CardFormProps) -> Html {
     let content_state_cloned = content_state.clone();
     let onchange_cloned = _props.onchange.clone();
     use_effect_with((title_state.clone(), content_state.clone()), move |_| {
-        let card_form_data = CardFormEntity { title: (*title_state_cloned).clone(), content: (*content_state_cloned).clone() };
+        let card_form_data = CardFormEntity {
+            title: (*title_state_cloned).clone(),
+            content: (*content_state_cloned).clone(),
+        };
         onchange_cloned.emit(card_form_data);
     });
 
@@ -85,10 +91,20 @@ pub fn CardCrud() -> Html {
         card_form_data.set(form_data);
     });
 
-    let cards_state: UseStateHandle<Vec<CardEntity>> = use_state(|| vec![
-        CardEntity { title: String::from("title1"), content: String::from("content1"), date: Utc::now() },
-        CardEntity { title: String::from("title2"), content: String::from("content2"), date: Utc::now() },
-    ]);
+    let cards_state: UseStateHandle<Vec<CardEntity>> = use_state(|| {
+        vec![
+            CardEntity {
+                title: String::from("title1"),
+                content: String::from("content1"),
+                date: Utc::now(),
+            },
+            CardEntity {
+                title: String::from("title2"),
+                content: String::from("content2"),
+                date: Utc::now(),
+            },
+        ]
+    });
 
     let cards_state_cloned = cards_state.clone();
     let onclick_submit = Callback::from(move |_| {
@@ -97,7 +113,11 @@ pub fn CardCrud() -> Html {
         let mut cards_cloned: Vec<_> = _cards_state_cloned.to_vec();
         let _title = (*_card_form_data_cloned).title.clone();
         let _content = (*_card_form_data_cloned).content.clone();
-        let new_card = CardEntity { title: _title, content: _content, date: Utc::now() };
+        let new_card = CardEntity {
+            title: _title,
+            content: _content,
+            date: Utc::now(),
+        };
         cards_cloned.push(new_card);
         _cards_state_cloned.set(cards_cloned);
     });
@@ -115,92 +135,100 @@ pub fn CardCrud() -> Html {
     };
 
     let edit_mode_idx: UseStateHandle<Option<i32>> = use_state(|| None);
-    let card_comps = (*cards_state).iter().enumerate().map(|(idx, props)| {
-        let default_fields = CardFormEntity {
-            title: props.title.clone(),
-            content: props.content.clone(),
-        };
-        let edit_mode_idx_cloned = edit_mode_idx.clone();
-        let show_new_card_cloned = show_new_card.clone();
+    let card_comps = (*cards_state)
+        .iter()
+        .enumerate()
+        .map(|(idx, props)| {
+            let default_fields = CardFormEntity {
+                title: props.title.clone(),
+                content: props.content.clone(),
+            };
+            let edit_mode_idx_cloned = edit_mode_idx.clone();
+            let show_new_card_cloned = show_new_card.clone();
 
-        let _card_form_data_update = card_form_data_update.clone();
-        let fields_update_form = default_fields.clone();
-        let onclick = Callback::from(move |_: _| {
-            _card_form_data_update.set(fields_update_form.clone());
-            edit_mode_idx_cloned.set(Some(idx.try_into().unwrap()));
-            show_new_card_cloned.set(false);
-        });
+            let _card_form_data_update = card_form_data_update.clone();
+            let fields_update_form = default_fields.clone();
+            let onclick = Callback::from(move |_: _| {
+                _card_form_data_update.set(fields_update_form.clone());
+                edit_mode_idx_cloned.set(Some(idx.try_into().unwrap()));
+                show_new_card_cloned.set(false);
+            });
 
-        let show_new_card_cloned2 = show_new_card.clone();
-        let edit_mode_idx_for_update = edit_mode_idx.clone();
-        let card_form_data_update_for_submit = card_form_data_update.clone();
+            let show_new_card_cloned2 = show_new_card.clone();
+            let edit_mode_idx_for_update = edit_mode_idx.clone();
+            let card_form_data_update_for_submit = card_form_data_update.clone();
 
-        let cards_state_for_update = cards_state.clone();
-        let _cards_for_update = cards_state.clone();
-        let onclick_update = Callback::from(move |_: _| {
-            let _cards_state = cards_state_for_update.clone();
-            let mut _cards: Vec<_> = cards_state_for_update.to_vec();
+            let cards_state_for_update = cards_state.clone();
+            let _cards_for_update = cards_state.clone();
+            let onclick_update = Callback::from(move |_: _| {
+                let _cards_state = cards_state_for_update.clone();
+                let mut _cards: Vec<_> = cards_state_for_update.to_vec();
 
-            let _title = (*card_form_data_update_for_submit).title.clone();
-            let _content = (*card_form_data_update_for_submit).content.clone();
-            let new_card = CardEntity { title: _title, content: _content, date: Utc::now() };
+                let _title = (*card_form_data_update_for_submit).title.clone();
+                let _content = (*card_form_data_update_for_submit).content.clone();
+                let new_card = CardEntity {
+                    title: _title,
+                    content: _content,
+                    date: Utc::now(),
+                };
 
-            _cards[edit_mode_idx_for_update.unwrap() as usize] = new_card;
-            _cards_state.set(_cards);
+                _cards[edit_mode_idx_for_update.unwrap() as usize] = new_card;
+                _cards_state.set(_cards);
 
-            show_new_card_cloned2.set(true);
-            edit_mode_idx_for_update.set(None);
-        });
+                show_new_card_cloned2.set(true);
+                edit_mode_idx_for_update.set(None);
+            });
 
-        let cards_state_for_delete = cards_state.clone();
-        let _cards_for_delete = cards_state.clone();
-        let onclick_delete = Callback::from(move |_: _| {
-            let _cards_state = cards_state_for_delete.clone();
-            let mut _cards: Vec<_> = _cards_for_delete.to_vec();
-            _cards.remove(idx as usize);
-            _cards_state.set(_cards);
-        });
-        let card_display = match *edit_mode_idx {
-            Some(selected_id) => {
-                if selected_id.eq(&<usize as TryInto<i32>>::try_into(idx).unwrap()) {
-                    html! {
-                        <CardForm onchange={onchange.clone()} {default_fields}>
-                            <button onclick={onclick_update} type="button">{"Update"}</button>
-                        </CardForm>
+            let cards_state_for_delete = cards_state.clone();
+            let _cards_for_delete = cards_state.clone();
+            let onclick_delete = Callback::from(move |_: _| {
+                let _cards_state = cards_state_for_delete.clone();
+                let mut _cards: Vec<_> = _cards_for_delete.to_vec();
+                _cards.remove(idx as usize);
+                _cards_state.set(_cards);
+            });
+            let card_display = match *edit_mode_idx {
+                Some(selected_id) => {
+                    if selected_id.eq(&<usize as TryInto<i32>>::try_into(idx).unwrap()) {
+                        html! {
+                            <CardForm onchange={onchange.clone()} {default_fields}>
+                                <button onclick={onclick_update} type="button">{"Update"}</button>
+                            </CardForm>
+                        }
+                    } else {
+                        html! {
+                            <div onclick={onclick.clone()}>
+                                <Card
+                                    key={props.date.to_string()}
+                                    title={props.title.clone()}
+                                    content={props.content.clone()}
+                                    date={props.date.clone()}
+                                />
+                            </div>
+                        }
                     }
-                } else {
-                    html! {
+                }
+                None => html! {
+                    <div>
                         <div onclick={onclick.clone()}>
                             <Card
-                                key={props.date.to_string().clone()}
+                                key={props.date.to_string()}
                                 title={props.title.clone()}
                                 content={props.content.clone()}
                                 date={props.date.clone()}
                             />
                         </div>
-                    }
-                }
-            }
-            None => html! {
-                <div>
-                    <div onclick={onclick.clone()}>
-                        <Card
-                            key={props.date.to_string().clone()}
-                            title={props.title.clone()}
-                            content={props.content.clone()}
-                            date={props.date.clone()}
-                        />
+                        <button onclick={onclick_delete}>{"X"}</button>
                     </div>
-                    <button onclick={onclick_delete}>{"X"}</button>
-                </div>
-            },
-        };
-        html! {
-            <li>
-                {card_display}
-            </li>
-        }
-    }).collect::<Html>();
+                },
+            };
+            html! {
+                <li>
+                    {card_display}
+                </li>
+            }
+        })
+        .collect::<Html>();
 
     html! {
         <div>
@@ -224,10 +252,10 @@ pub struct CardProps {
 #[function_component]
 fn Card(_props: &CardProps) -> Html {
     html! {
-            <div>
-                <div>{_props.title.clone()}</div>
-                <div>{_props.content.clone()}</div>
-                <div>{_props.date.to_string().clone()}</div>
-            </div>
-        }
+        <div>
+            <div>{&_props.title}</div>
+            <div>{&_props.content}</div>
+            <div>{_props.date.to_string()}</div>
+        </div>
+    }
 }
