@@ -134,7 +134,7 @@ pub fn CardCrud() -> Html {
         }
     };
 
-    let edit_mode_idx: UseStateHandle<Option<i32>> = use_state(|| None);
+    let edit_mode_idx: UseStateHandle<Option<usize>> = use_state(|| None);
     let card_comps = (*cards_state)
         .iter()
         .enumerate()
@@ -172,7 +172,7 @@ pub fn CardCrud() -> Html {
                     date: Utc::now(),
                 };
 
-                _cards[edit_mode_idx_for_update.unwrap() as usize] = new_card;
+                _cards[edit_mode_idx_for_update.unwrap()] = new_card;
                 _cards_state.set(_cards);
 
                 show_new_card_cloned2.set(true);
@@ -184,12 +184,12 @@ pub fn CardCrud() -> Html {
             let onclick_delete = Callback::from(move |_: _| {
                 let _cards_state = cards_state_for_delete.clone();
                 let mut _cards: Vec<_> = _cards_for_delete.to_vec();
-                _cards.remove(idx as usize);
+                _cards.remove(idx);
                 _cards_state.set(_cards);
             });
             let card_display = match *edit_mode_idx {
                 Some(selected_id) => {
-                    if selected_id.eq(&<usize as TryInto<i32>>::try_into(idx).unwrap()) {
+                    if selected_id.eq(&idx) {
                         html! {
                             <CardForm onchange={onchange.clone()} {default_fields}>
                                 <button onclick={onclick_update} type="button">{"Update"}</button>
