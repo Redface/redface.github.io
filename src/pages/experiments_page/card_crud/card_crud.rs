@@ -9,7 +9,7 @@ pub struct CardEntity {
     date: DateTime<Utc>,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Default)]
 pub struct CardFormEntity {
     title: String,
     content: String,
@@ -56,10 +56,10 @@ pub fn CardForm(_props: &CardFormProps) -> Html {
     let title_state_cloned = title_state.clone();
     let content_state_cloned = content_state.clone();
     let onchange_cloned = _props.onchange.clone();
-    use_effect_with_deps(move |_| {
+    use_effect_with((title_state.clone(), content_state.clone()), move |_| {
         let card_form_data = CardFormEntity { title: (*title_state_cloned).clone(), content: (*content_state_cloned).clone() };
         onchange_cloned.emit(card_form_data);
-    }, [title_state.clone(), content_state.clone()]);
+    });
 
     html! {
         <form>
@@ -81,9 +81,9 @@ pub fn CardCrud() -> Html {
     let card_form_data_cloned = card_form_data.clone();
     let card_form_data_update = card_form_data.clone();
 
-    let onchange = use_callback(move |form_data, _| {
+    let onchange = use_callback((), move |form_data, _| {
         card_form_data.set(form_data);
-    }, ());
+    });
 
     let cards_state: UseStateHandle<Vec<CardEntity>> = use_state(|| vec![
         CardEntity { title: String::from("title1"), content: String::from("content1"), date: Utc::now() },
@@ -102,9 +102,9 @@ pub fn CardCrud() -> Html {
         _cards_state_cloned.set(cards_cloned);
     });
 
-    let display_card_form = if *show_new_card == true {
+    let display_card_form = if *show_new_card {
         html! {
-            <CardForm onchange={onchange.clone()}>
+            <CardForm onchange={onchange.clone()} default_fields={CardFormEntity::default()}>
                 <button onclick={onclick_submit} type="button">{"Add"}</button>
             </CardForm>
         }

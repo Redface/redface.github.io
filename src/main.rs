@@ -1,8 +1,9 @@
 mod components;
 mod pages;
 
-use yew::{function_component, Html, html};
 use yew_router::prelude::*;
+use yew::prelude::*;
+
 
 use pages::{
     experiments_page::experiments::Experiments,
